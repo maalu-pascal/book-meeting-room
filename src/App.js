@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, HashRouter, Route, Link, NavLink, Switch, Redirect, params } from "react-router-dom"
-
-const Dashboard = () => { return (<h2 className="container">Dashboard</h2>) };
+import {Dashboard} from './dashboard.js';
 
 class Bookings extends Component {
   render() {
