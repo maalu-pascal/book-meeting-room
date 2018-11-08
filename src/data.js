@@ -1,10 +1,25 @@
 
 const rooms = [
-    {'name': 'Turing'},
-    {'name': 'Ada'},
-    {'name': 'K&R'},
-    {'name': 'Pascal'},
-    {'name': 'Babage'},
+    {
+        'name': 'Ada',
+        'booked': []
+    },
+    {
+        'name': 'Babage',
+        'booked': []
+    },
+    {
+        'name': 'K&R',
+        'booked': []
+    },
+    {
+        'name': 'Pascal',
+        'booked': []
+    },
+    {
+        'name': 'Turing',
+        'booked': []
+    }
 ]
 
-export {rooms};
+export { rooms };

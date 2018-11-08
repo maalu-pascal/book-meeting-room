@@ -5,26 +5,31 @@ import { Link } from "react-router-dom"
 
 class RoomBookings extends Component {
     render() {
+        console.log(this.props);
+        
         return (
-            <>
-                <span className="small text-secondary"> booking 1</span>
-                <span className="small text-secondary"> booking 2</span>
-            </>
+            <div  className="p-2">
+                <span className="small text-secondary border p-1 m-2">{this.props.room} booking 1</span>
+                <span className="small text-secondary border p-1 m-2">{this.props.room} booking 2</span>
+            </div>
         );
     }
 }
 
 class Room extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {booked: new Date()};
+      }
+    
     render() {
-        console.log("Room", this.props.name);
+        // console.log("Room", this.props.name);
         return (
-            <div className="p-3 border m-1">
-                <div>
+            <div className="border m-1">
+                <div className="border-bottom p-3 d-flex justify-content-between">
                     <h4>{this.props.name}</h4>
-                    <Link to={{ pathname: "/book", search:`?name=${this.props.name}` }}><button>Book</button></ Link>
+                    <Link to={{ pathname: "/book", search:`?name=${this.props.name}` }}><button >Book</button></ Link>
                 </div>
-
             <RoomBookings room={this.props.name} />
             </div >
         )
@@ -41,7 +46,7 @@ class Dashboard extends Component {
         return (
             <div className="container p-3">
                 {rooms.map(function (room, index) {
-                    { console.log("Dashboard", room.name, index) }
+                    // { console.log("Dashboard", room.name, index) }
                     return <Room key={index} name={room.name} />
                 })}
             </div>
