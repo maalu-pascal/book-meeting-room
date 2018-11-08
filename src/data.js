@@ -1,5 +1,5 @@
 
-const rooms = [
+const roomDetails = [
     {
         'name': 'Ada',
         'booked': []
@@ -9,7 +9,7 @@ const rooms = [
         'booked': []
     },
     {
-        'name': 'K&R',
+        'name': 'Neuman',
         'booked': []
     },
     {
@@ -22,4 +22,4 @@ const rooms = [
     }
 ]
 
-export { rooms };
+export { roomDetails };

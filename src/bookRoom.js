@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { roomDetails } from './data.js';
+import { Redirect } from "react-router-dom"
+
 
 class Book extends Component {
     constructor(props) {
@@ -8,15 +11,15 @@ class Book extends Component {
         let roomName = params.get("name");
 
         this.state = {
-            date: '',
+            date: new Date(),
             room: roomName,
-            from: '',
-            to: '',
-            userName: ''
+            from: '09:00',
+            to: '09:30',
+            userName: 'maalu'
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        // this.handle = this.handle.bind(this);
     }
 
     handleInputChange(event) {
@@ -32,11 +35,23 @@ class Book extends Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         this.setState({
             date: new Date()
         });
-        alert(`User ${this.state.userName} has booked ${this.state.room} at ${this.state.date} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
-        event.preventDefault();
+        // alert(`User ${this.state.userName} has booked ${this.state.room} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
+        roomDetails.map((roomDetail)=> {
+            console.log(roomDetail, roomDetail.name, this.state.room);
+            
+            if(roomDetail.name === this.state.room) { 
+                let newBooking = `${this.state.from} - ${this.state.to}`;
+                roomDetail.booked.push(newBooking) }
+        });
+        console.log(roomDetails);
+		this.props.history.push('/');
+
+        // <Redirect to="/" />
+
     }
 
     render() {
@@ -45,7 +60,7 @@ class Book extends Component {
                 {this.state.room ? (
                     <>
                         <h3>The room to be booked is <b>{this.state.room}</b></h3>
-                        <form onSubmit={this.handleSubmit} className="border p-3" >
+                        <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" >
                             <div className="form-group">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
@@ -53,13 +68,13 @@ class Book extends Component {
                             <label><b> Duration of booking: </b></label>
                             <div>
                                 <label>From:</label>
-                                <input name="from" type="time" value={this.state.from} step="1800" onChange={this.handleInputChange} className="ml-3" />
+                                <input name="from" type="time" value={this.state.from} step="1800" min="09:00" max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
                             <div>
                                 <label>From:</label>
-                                <input name="to" type="time" value={this.state.to} step="1800" onChange={this.handleInputChange} className="ml-3" />
+                                <input name="to" type="time" value={this.state.to} step="1800" min={this.state.from} max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
-
+                            {/* <button onClick={() => this.handle()} >Submit</button> */}
                             <input type="submit" value="Submit" />
                         </form>
                     </>
