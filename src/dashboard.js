@@ -19,7 +19,7 @@ class RoomBookings extends Component {
                             <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
                             <div className=" d-flex flex-wrap align-content-center col-11">
                             {room.booked.map((booking, index) => {
-                            return <div key={index} className="small text-secondary border p-1 mr-2 mb-2">{booking}</div>
+                            return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking}</div>
                             })}
                             </div>
                         </div>
@@ -34,7 +34,7 @@ class Room extends Component {
 
     render() {
         return (
-            <div className="border m-1">
+            <div className="border m-2">
                 <div className="border-bottom p-3 d-flex justify-content-between">
                     <h4>{this.props.name}</h4>
                     <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
@@ -47,13 +47,10 @@ class Room extends Component {
 
 class Dashboard extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div className="container p-3">
+            {console.log(roomDetails)}
                 {roomDetails.map((room, index) => {
                     return <Room key={index} name={room.name} />
                 })}

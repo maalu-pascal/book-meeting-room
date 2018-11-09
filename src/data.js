@@ -2,7 +2,7 @@
 const roomDetails = [
     {
         'name': 'Ada',
-        'booked': []
+        'booked': [],
     },
     {
         'name': 'Babage',

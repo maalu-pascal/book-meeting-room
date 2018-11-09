@@ -19,6 +19,8 @@ class Book extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.validateTime = this.validateTime.bind(this);
+
         // this.handle = this.handle.bind(this);
     }
 
@@ -34,29 +36,72 @@ class Book extends Component {
         });
     }
 
+    validateTime() {
+        console.log(this.state.from, this.state.to);
+        if (this.state.from > this.state.to) { return true }
+
+
+        // console.log("roomDetails.booked:", roomDetails[0].booked);
+
+
+        // if (roomDetails[0].booked.length > 0) {
+        //     roomDetails[0].booked.map((booking) => {
+        //         console.log(booking);
+        //         let t = booking.split('-');
+        //         console.log(t[0], t[1], t[0] > t[1]);
+        //         console.log(t[0] < t[1]);
+
+        //     });
+
+        //     console.log(roomDetails.booked);
+
+        // }
+        // console.log(roomDetails.booked);
+        // return false;
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         this.setState({
             date: new Date()
         });
 
-        validateTime();
+        if (this.validateTime()) {
+            return false;
+        }
 
         // alert(`User ${this.state.userName} has booked ${this.state.room} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
 
+        /* Room details is updated. */
         roomDetails.map((roomDetail) => {
 
             if (roomDetail.name === this.state.room) {
                 let newBooking = `${this.state.from} - ${this.state.to}`;
-                roomDetail.booked.push(newBooking)
+                
+                /*The postition where the new booking has to be inserted according to the time line,
+                 is calculated as 'index' */
+                
+                 let index = -1;
+                if (roomDetail.booked.length > 0) {
+                    index = roomDetail.booked.findIndex((previousBooked) => {
+                        let start = previousBooked.split('-');
+                        return ( this.state.from < start[0] );
+                    })
+                }
+                if (index < 0 ) { index = roomDetail.booked.length ; }
+
+                roomDetail.booked.splice(index, 0, newBooking)
             }
         });
 
+        
+        /* The user data is updated.*/
+        
         let existingUser = userDetails.findIndex((user) => {
-            
+
             if (user.userName === this.state.userName) { return user; }
         });
-        
+
         if (existingUser < 0) {
             let newUser = {
                 'userName': this.state.userName,
@@ -100,10 +145,9 @@ class Book extends Component {
                                 <input name="from" type="time" value={this.state.from} step="1800" min="09:00" max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
                             <div>
-                                <label>From:</label>
+                                <label>To:</label>
                                 <input name="to" type="time" value={this.state.to} step="1800" min={this.state.from} max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
-                            {/* <button onClick={() => this.handle()} >Submit</button> */}
                             <input type="submit" value="Submit" />
                         </form>
                     </>
@@ -115,24 +159,6 @@ class Book extends Component {
     }
 }
 
-function validateTime() {
-    // console.log("roomDetails.booked:", roomDetails[0].booked);
-
-    // if (roomDetails[0].booked.length > 0) {
-    //     roomDetails[0].booked.map((booking) => {
-    //         console.log(booking);
-    //         let t = booking.split('-');
-    //         console.log(t[0], t[1], t[0] > t[1]);
-    //         console.log(t[0] < t[1]);
-
-    //     });
-
-    //     console.log(roomDetails.booked);
-
-    // }
-    // console.log(roomDetails.booked);
-    // return false;
-}
 
 
 export { Book };
