@@ -70,35 +70,34 @@ class Book extends Component {
             return false;
         }
 
-        // alert(`User ${this.state.userName} has booked ${this.state.room} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
-
         /* Room details is updated. */
         roomDetails.map((roomDetail) => {
 
             if (roomDetail.name === this.state.room) {
-                let newBooking = `${this.state.from} - ${this.state.to}`;
-                
+
+                let newBooking = {
+                    from: this.state.from,
+                    to: this.state.to
+                };
+
                 /*The postition where the new booking has to be inserted according to the time line,
                  is calculated as 'index' */
-                
-                 let index = -1;
+
+                let index = -1;
                 if (roomDetail.booked.length > 0) {
                     index = roomDetail.booked.findIndex((previousBooked) => {
-                        let start = previousBooked.split('-');
-                        return ( this.state.from < start[0] );
+                        return this.state.from < previousBooked.from;
                     })
                 }
-                if (index < 0 ) { index = roomDetail.booked.length ; }
-
-                roomDetail.booked.splice(index, 0, newBooking)
+                if (index < 0) { index = roomDetail.booked.length; }
+                roomDetail.booked.splice(index, 0, newBooking);
             }
         });
 
-        
-        /* The user data is updated.*/
-        
-        let existingUser = userDetails.findIndex((user) => {
 
+        /* The user data is updated.*/
+
+        let existingUser = userDetails.findIndex((user) => {
             if (user.userName === this.state.userName) { return user; }
         });
 
@@ -120,12 +119,8 @@ class Book extends Component {
             };
 
             userDetails[existingUser].bookings.push(newBooking)
-
         }
-
         this.props.history.push('/');
-
-
     }
 
     render() {
@@ -158,7 +153,5 @@ class Book extends Component {
         );
     }
 }
-
-
 
 export { Book };
