@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { roomDetails, userDetails } from './data.js';
-import { Redirect } from "react-router-dom"
-
 
 class Book extends Component {
     constructor(props) {

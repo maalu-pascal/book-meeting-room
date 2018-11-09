@@ -30,19 +30,16 @@ class RoomBookings extends Component {
     }
 }
 
-class Room extends Component {
-
-    render() {
-        return (
-            <div className="border m-2">
-                <div className="border-bottom p-3 d-flex justify-content-between">
-                    <h4>{this.props.name}</h4>
-                    <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
-                </div>
-                <RoomBookings room={this.props.name} />
-            </div >
-        )
-    }
+const Room = () => {
+    return (
+        <div className="border m-2">
+            <div className="border-bottom p-3 d-flex justify-content-between">
+                <h4>{this.props.name}</h4>
+                <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
+            </div>
+            <RoomBookings room={this.props.name} />
+        </div >
+    )
 }
 
 class Dashboard extends Component {
