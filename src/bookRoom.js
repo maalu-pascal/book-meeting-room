@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { roomDetails } from './data.js';
+import { roomDetails, userDetails } from './data.js';
 import { Redirect } from "react-router-dom"
 
 
@@ -39,18 +39,47 @@ class Book extends Component {
         this.setState({
             date: new Date()
         });
-        // alert(`User ${this.state.userName} has booked ${this.state.room} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
-        roomDetails.map((roomDetail)=> {
-            console.log(roomDetail, roomDetail.name, this.state.room);
-            
-            if(roomDetail.name === this.state.room) { 
-                let newBooking = `${this.state.from} - ${this.state.to}`;
-                roomDetail.booked.push(newBooking) }
-        });
-        console.log(roomDetails);
-		this.props.history.push('/');
 
-        // <Redirect to="/" />
+        validateTime();
+
+        // alert(`User ${this.state.userName} has booked ${this.state.room} from ${this.state.from} to ${this.state.to} on ${this.state.date}`);
+
+        roomDetails.map((roomDetail) => {
+
+            if (roomDetail.name === this.state.room) {
+                let newBooking = `${this.state.from} - ${this.state.to}`;
+                roomDetail.booked.push(newBooking)
+            }
+        });
+
+        let existingUser = userDetails.findIndex((user) => {
+            
+            if (user.userName === this.state.userName) { return user; }
+        });
+        
+        if (existingUser < 0) {
+            let newUser = {
+                'userName': this.state.userName,
+                'bookings': [{
+                    'room': this.state.room,
+                    'from': this.state.from,
+                    'to': this.state.to
+                }]
+            };
+            userDetails.push(newUser);
+        } else {
+            let newBooking = {
+                'room': this.state.room,
+                'from': this.state.from,
+                'to': this.state.to
+            };
+
+            userDetails[existingUser].bookings.push(newBooking)
+
+        }
+
+        this.props.history.push('/');
+
 
     }
 
@@ -85,5 +114,25 @@ class Book extends Component {
         );
     }
 }
+
+function validateTime() {
+    // console.log("roomDetails.booked:", roomDetails[0].booked);
+
+    // if (roomDetails[0].booked.length > 0) {
+    //     roomDetails[0].booked.map((booking) => {
+    //         console.log(booking);
+    //         let t = booking.split('-');
+    //         console.log(t[0], t[1], t[0] > t[1]);
+    //         console.log(t[0] < t[1]);
+
+    //     });
+
+    //     console.log(roomDetails.booked);
+
+    // }
+    // console.log(roomDetails.booked);
+    // return false;
+}
+
 
 export { Book };

@@ -8,7 +8,6 @@ class RoomBookings extends Component {
         let room = roomDetails.find((room) => {
             if (room.name === this.props.room) { return room; }
         });
-        console.log(room.booked);
 
         return (
             <div className="p-2">

@@ -22,4 +22,6 @@ const roomDetails = [
     }
 ]
 
-export { roomDetails };
+const userDetails = [];
+
+export { roomDetails, userDetails };

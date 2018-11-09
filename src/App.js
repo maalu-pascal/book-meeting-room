@@ -34,7 +34,6 @@ class AppRouter extends Component {
   render() {
 
     return (
-      // <HashRouter>
       <BrowserRouter>
         <div>
           <Header />
@@ -45,7 +44,6 @@ class AppRouter extends Component {
           </Switch>
         </div>
         </BrowserRouter>
-      // </HashRouter>
     );
   }
 }
