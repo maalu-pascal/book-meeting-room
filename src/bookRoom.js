@@ -26,7 +26,7 @@ class Book extends Component {
         // console.log(event.target, event.target.type, event.target.name);
 
         const target = event.target;
-        const value = target.type === 'text' ? target.value : target.value;
+        const value = target.value;
         const name = target.name;
 
         this.setState({
@@ -35,27 +35,39 @@ class Book extends Component {
     }
 
     validateTime() {
-        console.log(this.state.from, this.state.to);
-        if (this.state.from > this.state.to) { return true }
+        let errorMessage = "The room is already booked during this time interval! Please choose another time interval."
+        let error = [];
+        if (this.state.from > this.state.to) {
+            error[0] = "From time should be greater than to time.";
+            return error;
+        }
+
+        // let fromTime = new Date((this.state.date).toDateString()+" "+this.state.from);
+        // let toTime = new Date((this.state.date).toDateString()+" "+this.state.to);
 
 
-        // console.log("roomDetails.booked:", roomDetails[0].booked);
+        let room = roomDetails.find((room) => {
+            if (room.name === this.state.room) { return room; }
+        });
+        error = room.booked.map((booking) => {
 
+            if (booking.from === this.state.from || booking.to === this.state.to) {
+                return errorMessage;
+            };
 
-        // if (roomDetails[0].booked.length > 0) {
-        //     roomDetails[0].booked.map((booking) => {
-        //         console.log(booking);
-        //         let t = booking.split('-');
-        //         console.log(t[0], t[1], t[0] > t[1]);
-        //         console.log(t[0] < t[1]);
+            if (booking.from < this.state.from && this.state.from < booking.to) {
+                return errorMessage;
+            };
 
-        //     });
+            if (booking.from < this.state.to && this.state.to < booking.to) {
+                return errorMessage;
+            };
 
-        //     console.log(roomDetails.booked);
+        });
 
-        // }
-        // console.log(roomDetails.booked);
-        // return false;
+        let errorIndex = error.findIndex((msg) => { return (msg != undefined) });
+
+        return errorIndex >= 0 ? (error[errorIndex]) : false;
     }
 
     handleSubmit(event) {
@@ -64,7 +76,10 @@ class Book extends Component {
             date: new Date()
         });
 
-        if (this.validateTime()) {
+        let validation = this.validateTime();
+
+        if (validation) {
+            document.getElementById("formError").innerHTML = "*" + validation;
             return false;
         }
 
@@ -143,6 +158,7 @@ class Book extends Component {
                             </div>
                             <input type="submit" value="Submit" />
                         </form>
+                        <span id="formError" className="text-danger"> </span>
                     </>
                 ) : (
                         <h3>There is no room selected</h3>

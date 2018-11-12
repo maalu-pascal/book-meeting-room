@@ -5,3 +5,7 @@ header .navbar-brand{
 header .navbar-brand:hover{
     color: #b6b5b5;
 }
+
+#formError {
+    min-height: 20px;
+}
