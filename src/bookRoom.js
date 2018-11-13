@@ -18,12 +18,9 @@ class Book extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.validateTime = this.validateTime.bind(this);
-
-        // this.handle = this.handle.bind(this);
     }
 
     handleInputChange(event) {
-        // console.log(event.target, event.target.type, event.target.name);
 
         const target = event.target;
         const value = target.value;
