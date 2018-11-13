@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import "./App.css";
+import React , {Component} from "react";
+import "./../App.css";
 import { BrowserRouter, Route, NavLink, Switch, Redirect } from "react-router-dom"
-import {Dashboard} from './dashboard.js';
-import {Book} from './bookRoom.js';
+import { Dashboard } from './dashboard.js';
+import { Book } from './bookRoom.js';
 
 class Bookings extends Component {
   render() {
@@ -21,8 +21,8 @@ const Header = () => {
       <div className="container d-flex">
         <span className="h2 text-light mr-5"><b><i>Book Your Room</i></b></span>
         <div>
-          <NavLink to="/" exact activeStyle={{color: "white"}} className="navbar-brand">Home</NavLink>
-          <NavLink className="navbar-brand " to="/bookings" activeStyle={{color: "white"}}>Bookings</NavLink>
+          <NavLink to="/" exact activeStyle={{ color: "white" }} className="navbar-brand">Home</NavLink>
+          <NavLink className="navbar-brand " to="/bookings" activeStyle={{ color: "white" }}>Bookings</NavLink>
         </div>
       </div>
     </header>
@@ -43,7 +43,7 @@ class AppRouter extends Component {
             <Route path="/" component={Dashboard} />
           </Switch>
         </div>
-        </BrowserRouter>
+      </BrowserRouter>
     );
   }
 }

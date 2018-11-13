@@ -2,11 +2,15 @@
   "name": "book-room",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/client/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server"
+    "server": "nodemon src/server/server.js",
+    "start": "webpack-dev-server",
+    "webpack": "./node_modules/.bin/webpack -w",
+    "dev": "nodemon src/server/server.js & npm start"
   },
+  "proxy": "http://localhost:5030/",
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -14,7 +18,10 @@
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.2",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
     "css-loader": "^1.0.0",
     "style-loader": "^0.23.0",
     "webpack": "^4.19.1",
@@ -22,7 +29,9 @@
     "webpack-dev-server": "^3.1.8"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "bootstrap": "^4.1.3",
+    "express": "^4.16.4",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-router-dom": "^4.3.1"
