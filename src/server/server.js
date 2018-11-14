@@ -2,12 +2,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 5030;
+const port = 5020;
 
 app.use(express.static(__dirname + './../../')); //serves the index.html
-app.get('/', (req, res) => {
-    res.send({ test: 'Hello' });
+// app.get('/', (req, res) => {
+//     res.send({ test: 'Hello' });
+// });
+
+app.post('/success', (req, res) => {
+    const customers = [
+        { id: 1, firstName: 'John', lastName: 'Doe' },
+        { id: 2, firstName: 'Brad', lastName: 'Traversy' },
+        { id: 3, firstName: 'Mary', lastName: 'Swanson' },
+    ];
+    res.json(customers);
 });
+
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
@@ -23,10 +38,12 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-app.post('/newUser', function (req, res) {
-    let name = req.body.Name,
-    color = req.body.Colour;
-    res.send("User Added" + name + ' ' + color);
+app.post('/new-booking-test', function (req, res) {
+    let user = req.body.userName,
+    from = req.body.from,
+    to = req.body.to,
+    room = req.body.room;
+    res.send("New booking for the room "+ room + " added by " + user + ' from ' +from+" to "+to );
 });
 
 

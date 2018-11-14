@@ -3,6 +3,7 @@ import "./../App.css";
 import { BrowserRouter, Route, NavLink, Switch, Redirect } from "react-router-dom"
 import { Dashboard } from './dashboard.js';
 import { Book } from './bookRoom.js';
+import { List } from './success';
 
 class Bookings extends Component {
   render() {
@@ -40,6 +41,7 @@ class AppRouter extends Component {
           <Switch>
             <Route path="/bookings" component={Bookings} />
             <Route path="/book" component={Book} />
+            <Route path="/success" component={List} />
             <Route path="/" component={Dashboard} />
           </Switch>
         </div>

@@ -39,10 +39,6 @@ class Book extends Component {
             return error;
         }
 
-        // let fromTime = new Date((this.state.date).toDateString()+" "+this.state.from);
-        // let toTime = new Date((this.state.date).toDateString()+" "+this.state.to);
-
-
         let room = roomDetails.find((room) => {
             if (room.name === this.state.room) { return room; }
         });
@@ -130,7 +126,8 @@ class Book extends Component {
 
             userDetails[existingUser].bookings.push(newBooking)
         }
-        this.props.history.push('/');
+        // document.getElementById("bookingForm").submit();
+        this.props.history.push('/success');
     }
 
     render() {
@@ -139,7 +136,9 @@ class Book extends Component {
                 {this.state.room ? (
                     <>
                         <h3>The room to be booked is <b>{this.state.room}</b></h3>
-                        <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" >
+                        <form  id="bookingForm" className="border p-3" method="post" >
+                        {/* <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" ></form> */}
+                        {/* <form  id="bookingForm" className="border p-3" method="post" action="/success" > */}
                             <div className="form-group">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
@@ -153,7 +152,9 @@ class Book extends Component {
                                 <label>To:</label>
                                 <input name="to" type="time" value={this.state.to} step="1800" min={this.state.from} max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
-                            <input type="submit" value="Submit" />
+                            <input type="hidden" name="room" value={this.state.room} ></input>
+                            <input type="button" onClick={this.handleSubmit.bind(this)}  value="Submit" />
+                            {/* <input type="submit" value="Submit" /> */}
                         </form>
                         <span id="formError" className="text-danger"> </span>
                     </>

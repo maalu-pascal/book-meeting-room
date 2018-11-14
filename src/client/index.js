@@ -5,11 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(<AppRouter />, document.getElementById("root"));
 
-
-
-
-
-
 // class Custom extends React.Component {
 
 //     constructor() {
@@ -18,19 +13,14 @@ ReactDOM.render(<AppRouter />, document.getElementById("root"));
 //             customers: {}
 //         }
 //     }
-
 //     componentDidMount() {
-//         fetch('/')
+//         fetch('http://localhost:5030/api')
 //           .then(res => res.json())
 //           .then(customers => this.setState({customers}, () => console.log(customers)));
 //       }
-    
-
 //     render() {
 //         return (
-//             <div>
-//                 <h2>Test</h2>
-//             </div>
+//             <div> <h2>Test</h2> </div>
 //         )
 //     }
 // }

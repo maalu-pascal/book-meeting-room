@@ -30,8 +30,8 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, "./"),
-    port: 3050,
-    publicPath: "http://localhost:3050/dist/",
+    port: 3020,
+    publicPath: "http://localhost:3020/dist/",
     hotOnly: true
   },
   plugins: [new webpack.HotModuleReplacementPlugin()]
