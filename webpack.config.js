@@ -1,8 +1,12 @@
 const path = require("path");
 const webpack = require("webpack");
 
+
+var BUILD_DIR = path.resolve(__dirname, './dist');
+var APP_DIR = path.resolve(__dirname, './src/client');
+
 module.exports = {
-  entry: "./src/client/index.js",
+  entry: APP_DIR+"/index.js",
   mode: "development",
   module: {
     rules: [
@@ -20,12 +24,12 @@ module.exports = {
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: path.resolve(__dirname, "dist/"),
+    path: BUILD_DIR,
     publicPath: "/dist/",
     filename: "bundle.js"
   },
   devServer: {
-    contentBase: path.join(__dirname, "public/"),
+    contentBase: path.join(__dirname, "./"),
     port: 3050,
     publicPath: "http://localhost:3050/dist/",
     hotOnly: true
