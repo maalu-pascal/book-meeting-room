@@ -13,12 +13,31 @@ class Book extends Component {
             room: roomName,
             from: '09:00',
             to: '09:30',
-            userName: 'maalu'
+            userName: 'maalu',
+            roomDetail: [],
+            userDetails: [],
+            customers: []
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.validateTime = this.validateTime.bind(this);
     }
+
+    // // Fetch the customers on first mount
+    // componentDidMount() {
+    //     this.getCustomers();
+    // }
+
+    // // Retrieves the customers from the Express app
+    // getCustomers() {
+    //     fetch('http://localhost:5030/success')
+    //         .then(res => res.json())
+    //         .then(customers => {
+    //             this.setState({ customers })
+    //             console.log(customers)
+    //         })
+    //         .catch(() => console.log("Can’t access \'/success\' response. Blocked by browser?"))
+    // }
 
     handleInputChange(event) {
 
@@ -126,8 +145,8 @@ class Book extends Component {
 
             userDetails[existingUser].bookings.push(newBooking)
         }
-        // document.getElementById("bookingForm").submit();
-        this.props.history.push('/success');
+        // this.props.history.push('/');
+        document.getElementById("bookingForm").submit();
     }
 
     render() {
@@ -136,9 +155,10 @@ class Book extends Component {
                 {this.state.room ? (
                     <>
                         <h3>The room to be booked is <b>{this.state.room}</b></h3>
-                        <form  id="bookingForm" className="border p-3" method="post" >
-                        {/* <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" ></form> */}
-                        {/* <form  id="bookingForm" className="border p-3" method="post" action="/success" > */}
+                        {/* <form id="bookingForm" className="border p-3" method="post" > */}
+                            {/* <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" ></form> */}
+                            <form  id="bookingForm" className="border p-3" method="post" action="/new-booking-test" >
+                            {/* <form  id="bookingForm" className="border p-3" method="post" > */}
                             <div className="form-group">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
@@ -153,7 +173,7 @@ class Book extends Component {
                                 <input name="to" type="time" value={this.state.to} step="1800" min={this.state.from} max="17:30" onChange={this.handleInputChange} className="ml-3" />
                             </div>
                             <input type="hidden" name="room" value={this.state.room} ></input>
-                            <input type="button" onClick={this.handleSubmit.bind(this)}  value="Submit" />
+                            <input type="button" onClick={this.handleSubmit.bind(this)} value="Submit" />
                             {/* <input type="submit" value="Submit" /> */}
                         </form>
                         <span id="formError" className="text-danger"> </span>

@@ -41,7 +41,7 @@ class AppRouter extends Component {
           <Switch>
             <Route path="/bookings" component={Bookings} />
             <Route path="/book" component={Book} />
-            <Route path="/success" component={List} />
+            {/* <Route path="/success" component={List} /> */}
             <Route path="/" component={Dashboard} />
           </Switch>
         </div>

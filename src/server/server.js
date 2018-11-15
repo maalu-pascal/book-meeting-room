@@ -2,33 +2,26 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 5020;
+const port = 5030;
+
+const PATH_root = "/var/www/html/book-room";
+const entries = [];
 
 app.use(express.static(__dirname + './../../')); //serves the index.html
-// app.get('/', (req, res) => {
-//     res.send({ test: 'Hello' });
-// });
+app.use(express.static('src/client'))
+app.use(express.static('src/client/components'))
 
-app.post('/success', (req, res) => {
-    const customers = [
-        { id: 1, firstName: 'John', lastName: 'Doe' },
-        { id: 2, firstName: 'Brad', lastName: 'Traversy' },
-        { id: 3, firstName: 'Mary', lastName: 'Swanson' },
-    ];
-    res.json(customers);
-});
-
-app.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
+app.get('/', function (req, res) {
+    // res.sendFile(PATH_root + '/index.html')
+    res.sendFile(__dirname + './../../')
+})
 
 
+app.get('/getRoomList', function (req, res) {
+    res.send(roomDetails);
+})
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
-
-
-
-// 
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -39,18 +32,65 @@ app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 app.post('/new-booking-test', function (req, res) {
-    let user = req.body.userName,
-    from = req.body.from,
-    to = req.body.to,
-    room = req.body.room;
-    res.send("New booking for the room "+ room + " added by " + user + ' from ' +from+" to "+to );
+    const newEntry = {
+        name: req.body.userName,
+        from: req.body.from,
+        to: req.body.to,
+        room : req.body.room
+    }
+    entries.push(newEntry);
+    console.log(entries);
+    // console.log(PATH_root +"/index.html");
+    
+    res.redirect('/');
+    // res.sendFile(PATH_root + "/index.html");
 });
 
 
 
 
+app.post('/success', (req, res) => {
+    const customers = [
+        { id: 1, firstName: 'John', lastName: 'Doe' },
+        { id: 2, firstName: 'Brad', lastName: 'Traversy' },
+        { id: 3, firstName: 'Mary', lastName: 'Swanson' },
+    ];
+    // res.json(customers);
+});
+
+
+const roomDetails = [
+    {
+        'name': 'Ada',
+        'booked': [],
+    },
+    {
+        'name': 'Babage',
+        'booked': []
+    },
+    {
+        'name': 'Neuman',
+        'booked': []
+    },
+    {
+        'name': 'Pascal',
+        'booked': []
+    },
+    {
+        'name': 'Turing',
+        'booked': []
+    }
+]
+
+const userDetails = [];
+
+// app.get('/')
+
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(PATH_root + '/index.html'));
+// });
 
 
 // app.post('/world', (req, res) => {

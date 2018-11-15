@@ -4,10 +4,42 @@ import { Link } from "react-router-dom"
 
 
 class RoomBookings extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            rooms: []
+        }
+
+    }
+
+    // componentDidMount() {
+    //     this.getRoomList();
+    //     console.log("In");
+    // }
+
+    // // Retrieves the list of items from the Express app
+    // getRoomList() {
+    //     fetch('/getRoomList', {
+    //         method: 'get',
+    //         headers: { 'Content-Type': 'application/json' },
+    //     })
+    //         .then(res => res.json())
+    //         .then(rooms => {
+    //             this.setState({ rooms });
+    //             console.log(rooms);
+    //         })
+    // }
+
     render() {
         let room = roomDetails.find((room) => {
             if (room.name === this.props.room) { return room; }
         });
+        // console.log(this.state.rooms);
+
+        // let room = this.state.rooms.find((room) => {
+        //     if (room.name === this.props.room) { return room; }
+        // });
 
         return (
             <div className="p-2">
@@ -18,7 +50,7 @@ class RoomBookings extends Component {
                         <div className="d-flex">
                             <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
                             <div className=" d-flex flex-wrap align-content-center col-11">
-                                {room.booked.map((booking, index) => {                                    
+                                {room.booked.map((booking, index) => {
                                     return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
                                 })}
                             </div>
@@ -51,11 +83,11 @@ class Dashboard extends Component {
         return (
             <div className="container p-3">
                 <div className="d-flex">
-                <span>Daylight Saving: </span>
-                    <select className= "m-2 ml-auto">
+                    <span>Daylight Saving: </span>
+                    <select className="m-2 ml-auto">
                         <option defaultValue value="+00:00">OFF</option>
                         <option value="+01:00">Eastern Standard Time</option>
-                        <option  value="-01:00">Japan Standard Time</option>
+                        <option value="-01:00">Japan Standard Time</option>
                     </select>
                 </div>
                 {roomDetails.map((room, index) => {
