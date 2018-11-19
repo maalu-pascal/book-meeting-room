@@ -5,7 +5,6 @@ const app = express();
 const port = 5020;
 
 const PATH_root = "/var/www/html/book-room";
-const entries = [];
 
 app.use(express.static(__dirname + './../../')); //serves the index.html
 app.use(express.static('src/client'))
@@ -36,18 +35,9 @@ app.use(express.json());
 app.use(express.urlencoded()); 
 
 app.post('/new-booking-test', function (req, res) {
-    const newEntry1 = {
-        name: req.body.userName,
-        from: req.body.from,
-        to: req.body.to,
-        room : req.body.room
-    }
-    entries.push(newEntry1);
-    console.log("entries: ",entries);
-    // console.log(PATH_root +"/index.html");
-    
 
-    const user = data.users.find((user)=>{ return(user.name.toUpperCase === req.body.userName.toUpperCase);});
+    const user = data.users.find((user)=>{ return(user.name.toUpperCase() === req.body.userName.toUpperCase())});
+    
     const room = data.roomDetails.find((room) => { return (room.name === req.body.room); });
     let newEntry = {};
 
@@ -65,47 +55,8 @@ app.post('/new-booking-test', function (req, res) {
         user.bookings.push(newEntry.id);
     }
     console.log("data : ",data);
-
-
-
-
-
     res.redirect('/');
-    // res.sendFile(PATH_root + "/index.html");
 });
-
-
-
-
-// app.get('/roomDetails', (req, res) => {
-//     res.json(roomDetails);
-// });
-
-
-const roomDetails = [
-    {
-        'name': 'Ada',
-        'booked': [],
-    },
-    {
-        'name': 'Babage',
-        'booked': []
-    },
-    {
-        'name': 'Neuman',
-        'booked': []
-    },
-    {
-        'name': 'Pascal',
-        'booked': []
-    },
-    {
-        'name': 'Turing',
-        'booked': []
-    }
-]
-
-const userDetails = [];
 
 const data = {
     "roomDetails": [
@@ -160,36 +111,10 @@ const data = {
     
     ]
 };
-
-// app.get('/')
-
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(PATH_root + '/index.html'));
 // });
 
-
-// app.post('/world', (req, res) => {
-//     console.log(req.body);
-//     res.send(
-//         `I received your POST request. This is what you sent me: ${req.body.post}`,
-//     );
-// });
-
-// app.get('/', (req, res) => {
-//     const customers = [
-//         { id: 1, firstName: 'John', lastName: 'Doe' },
-//         { id: 2, firstName: 'Brad', lastName: 'Traversy' },
-//         { id: 3, firstName: 'Mary', lastName: 'Swanson' },
-//     ];
-//     res.json(customers);
-// });
-
-// var express = require('express');
-// var app = express();
-
-// app.use(express.static(__dirname +'./../../')); //serves the index.html
 // var server = app.listen(3020, function () {
 //    console.log("app running on port.", server.address().port);
 // });

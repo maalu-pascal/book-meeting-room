@@ -21,7 +21,7 @@ class Book extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.validateTime = this.validateTime.bind(this);
-        this.getCustomers();
+        // this.getCustomers();
 
     }
 
@@ -31,17 +31,17 @@ class Book extends Component {
     // }
 
     // Retrieves the customers from the Express app
-    getCustomers() {
-        console.log("in");
+    // getCustomers() {
+    //     console.log("in");
         
-        fetch('http://localhost:5030/success')
-            .then(res => res.json())
-            .then(customers => {
-                this.setState({ customers })
-                console.log(customers)
-            })
-            .catch(() => console.log("Can’t access \'/success\' response. Blocked by browser?"))
-    }
+    //     fetch('http://localhost:5030/success')
+    //         .then(res => res.json())
+    //         .then(customers => {
+    //             this.setState({ customers })
+    //             console.log(customers)
+    //         })
+    //         .catch(() => console.log("Can’t access \'/success\' response. Blocked by browser?"))
+    // }
 
     handleInputChange(event) {
 

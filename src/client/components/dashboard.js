@@ -80,6 +80,8 @@ class Dashboard extends Component {
     }
 
     render() {
+        console.log("Datas : ", this.state.rooms);
+        
         return (
             <div className="container p-3">
                 <div className="d-flex">
