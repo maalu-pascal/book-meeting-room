@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 5030;
+const port = 5020;
 
 const PATH_root = "/var/www/html/book-room";
 const entries = [];
@@ -17,31 +17,59 @@ app.get('/', function (req, res) {
 })
 
 
-app.get('/getRoomList', function (req, res) {
-    res.send(roomDetails);
+app.get('/getData', function (req, res) {
+    res.send(data);
+})
+
+app.get('/getRoomDetails', function (req, res) {
+    res.send([data.roomDetails, data.roomBookings ]);
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.json());       
+app.use(bodyParser.urlencoded({     
     extended: true
 }));
 
-app.use(express.json());       // to support JSON-encoded bodies
-app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.json());      
+app.use(express.urlencoded()); 
 
 app.post('/new-booking-test', function (req, res) {
-    const newEntry = {
+    const newEntry1 = {
         name: req.body.userName,
         from: req.body.from,
         to: req.body.to,
         room : req.body.room
     }
-    entries.push(newEntry);
-    console.log(entries);
+    entries.push(newEntry1);
+    console.log("entries: ",entries);
     // console.log(PATH_root +"/index.html");
     
+
+    const user = data.users.find((user)=>{ return(user.name.toUpperCase === req.body.userName.toUpperCase);});
+    const room = data.roomDetails.find((room) => { return (room.name === req.body.room); });
+    let newEntry = {};
+
+    if (room && user) {
+        newEntry = {
+            "id": `id-${new Date().getTime()}`,
+            "userId": user.id,
+            "roomId": room.id,
+            "from": req.body.from,
+            "to": req.body.to,
+            "date":`${new Date()}`
+        };
+        data.roomBookings.push(newEntry);
+        room.booked.push(newEntry.id);
+        user.bookings.push(newEntry.id);
+    }
+    console.log("data : ",data);
+
+
+
+
+
     res.redirect('/');
     // res.sendFile(PATH_root + "/index.html");
 });
@@ -49,14 +77,9 @@ app.post('/new-booking-test', function (req, res) {
 
 
 
-app.post('/success', (req, res) => {
-    const customers = [
-        { id: 1, firstName: 'John', lastName: 'Doe' },
-        { id: 2, firstName: 'Brad', lastName: 'Traversy' },
-        { id: 3, firstName: 'Mary', lastName: 'Swanson' },
-    ];
-    // res.json(customers);
-});
+// app.get('/roomDetails', (req, res) => {
+//     res.json(roomDetails);
+// });
 
 
 const roomDetails = [
@@ -83,6 +106,60 @@ const roomDetails = [
 ]
 
 const userDetails = [];
+
+const data = {
+    "roomDetails": [
+        {
+            'id': '00201',
+            'name': 'Ada',
+            'booked': [],
+        },
+        {
+            'id': '00202',
+            'name': 'Babage',
+            'booked': []
+        },
+        {
+            'id': '00203',
+            'name': 'Neuman',
+            'booked': []
+        },
+        {
+            'id': '00204',
+            'name': 'Pascal',
+            'booked': []
+        },
+        {
+            'id': '00205',
+            'name': 'Turing',
+            'booked': []
+        }
+    ],
+    "roomBookings": [],
+    "users": [
+        {
+            "id": "0101",
+            "name": "Maalu",
+            "bookings":[]
+        },
+        {
+            "id": "0102",
+            "name": "Lida",
+            "bookings":[]
+        },
+        {
+            "id": "0103",
+            "name": "Alan",
+            "bookings":[]
+        },
+        {
+            "id": "0104",
+            "name": "Akshay",
+            "bookings":[]
+        },
+    
+    ]
+};
 
 // app.get('/')
 

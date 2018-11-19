@@ -10,7 +10,7 @@
     "webpack": "./node_modules/.bin/webpack -w",
     "dev": "nodemon src/server/server.js & npm start"
   },
-  "proxy": "localhost:5030/",
+  "proxy": "localhost:5020/",
   "author": "",
   "license": "ISC",
   "devDependencies": {

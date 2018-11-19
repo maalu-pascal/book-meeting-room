@@ -8,49 +8,25 @@ class RoomBookings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rooms: []
+            rooms: this.props.rooms,
+            bookings: this.props.bookings
         }
-
     }
 
-    // componentDidMount() {
-    //     this.getRoomList();
-    //     console.log("In");
-    // }
-
-    // // Retrieves the list of items from the Express app
-    // getRoomList() {
-    //     fetch('/getRoomList', {
-    //         method: 'get',
-    //         headers: { 'Content-Type': 'application/json' },
-    //     })
-    //         .then(res => res.json())
-    //         .then(rooms => {
-    //             this.setState({ rooms });
-    //             console.log(rooms);
-    //         })
-    // }
-
     render() {
-        let room = roomDetails.find((room) => {
-            if (room.name === this.props.room) { return room; }
-        });
-        // console.log(this.state.rooms);
 
-        // let room = this.state.rooms.find((room) => {
-        //     if (room.name === this.props.room) { return room; }
-        // });
+        let bookingData= this.props.bookings;
 
         return (
             <div className="p-2">
-                {(room.booked.length == 0) ?
+                {(bookingData.length == 0) ?
                     (<span className="small text-secondary  p-1 m-2"> No bookings to show.</span>)
                     :
                     (
                         <div className="d-flex">
                             <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
                             <div className=" d-flex flex-wrap align-content-center col-11">
-                                {room.booked.map((booking, index) => {
+                                {bookingData.map((booking, index) => {
                                     return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
                                 })}
                             </div>
@@ -71,13 +47,37 @@ class Room extends Component {
                     <h4>{this.props.name}</h4>
                     <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
                 </div>
-                <RoomBookings room={this.props.name} />
+                <RoomBookings room={this.props.name} rooms={this.props.room} bookings={this.props.bookings}/>
             </div >
         )
     }
 }
 
 class Dashboard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            rooms: [],
+            bookings: []
+        }
+    }
+
+    componentDidMount() {
+        this.getRoomList();
+    }
+
+    // Retrieves the datas from the server.
+    getRoomList() {
+        fetch('/getRoomDetails', {
+            method: 'get',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(res => res.json())
+            .then(datas => {
+                this.setState({ rooms: datas[0] });
+                this.setState({ bookings: datas[1] });
+            })            
+    }
 
     render() {
         return (
@@ -90,8 +90,16 @@ class Dashboard extends Component {
                         <option value="-01:00">Japan Standard Time</option>
                     </select>
                 </div>
-                {roomDetails.map((room, index) => {
-                    return <Room key={index} name={room.name} />
+                {this.state.rooms.map((room, index) => {
+                    let bookings = this.state.bookings.filter((roomBooking)=> {
+                        let found = this.state.rooms[index].booked.find((booking)=>{
+                            return (booking === roomBooking.id)
+                        });
+                        
+                        if(found) { return roomBooking};
+                    });
+
+                    return <Room key={index} name={room.name} room={this.state.rooms[index]} bookings={bookings}/>
                 })}
             </div>
         )
