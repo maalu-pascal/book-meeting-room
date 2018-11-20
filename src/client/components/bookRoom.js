@@ -87,6 +87,8 @@ class Book extends Component {
     }
 
     handleSubmit(event) {
+        console.log("handling submit!");
+        
         event.preventDefault();
         this.setState({
             date: new Date()

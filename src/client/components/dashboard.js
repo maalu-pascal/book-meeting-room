@@ -5,14 +5,26 @@ import { Link } from "react-router-dom"
 
 class RoomBookings extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            rooms: this.props.rooms,
-            bookings: this.props.bookings
-        }
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         rooms: this.props.rooms,
+    //         bookings: this.props.bookings
+    //     }
+    // }
 
+    viewBooking(booking) {
+        console.log(this.props.bookings, booking);
+        if(booking) {
+            let bookingDetailDiv;
+            bookingDetailDiv = `<span>${booking.id}</span>
+            <button onClick='{()=>{}}' >Delete Booking</button>
+            <button onClick='(()=>{})' >Update Booking</button>`;
+            document.getElementById("bookingDetails").innerHTML = bookingDetailDiv;
+
+        }
+        
+    }
     render() {
 
         let bookingData= this.props.bookings;
@@ -27,7 +39,8 @@ class RoomBookings extends Component {
                             <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
                             <div className=" d-flex flex-wrap align-content-center col-11">
                                 {bookingData.map((booking, index) => {
-                                    return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
+                                    // return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
+                                    return <button key={index} className="small text-secondary border-secondary p-1 mr-2 mb-1" onClick={()=> {this.viewBooking(booking)}}>{booking.from} - {booking.to}</button>
                                 })}
                             </div>
                         </div>
@@ -42,12 +55,13 @@ class Room extends Component {
 
     render() {
         return (
-            <div className="border m-2">
+            <div id="room" className="border m-2">
                 <div className="border-bottom p-3 d-flex justify-content-between">
                     <h4>{this.props.name}</h4>
                     <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
                 </div>
-                <RoomBookings room={this.props.name} rooms={this.props.room} bookings={this.props.bookings}/>
+                <RoomBookings room={this.props.name} rooms={this.props.room} bookings={this.props.bookings} className="border-bottom" />
+                <div id="bookingDetails"></div>
             </div >
         )
     }
@@ -63,11 +77,11 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        this.getRoomList();
+        this.getRoomData();
     }
 
     // Retrieves the datas from the server.
-    getRoomList() {
+    getRoomData() {
         fetch('/getRoomDetails', {
             method: 'get',
             headers: { 'Content-Type': 'application/json' },
