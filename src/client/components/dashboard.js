@@ -1,33 +1,51 @@
 import React, { Component } from "react";
 import { roomDetails } from './data.js';
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 
 
 class RoomBookings extends Component {
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         rooms: this.props.rooms,
-    //         bookings: this.props.bookings
-    //     }
-    // }
+    deleteBooking(booking) {
+        fetch(`booking`, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'id': booking.id
+            })
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+            }).
+            then(data => {
+                console.log(data.status);
+                window.location.reload();
+            });
+    }
 
     viewBooking(booking) {
         console.log(this.props.bookings, booking);
-        if(booking) {
-            let bookingDetailDiv;
-            bookingDetailDiv = `<span>${booking.id}</span>
-            <button onClick='{()=>{}}' >Delete Booking</button>
-            <button onClick='(()=>{})' >Update Booking</button>`;
-            document.getElementById("bookingDetails").innerHTML = bookingDetailDiv;
 
+        if (booking) {
+            let bookingDetailDiv;
+            bookingDetailDiv = `<div class="p-3">
+            <span>Booking Details</span><br>
+            <span><b>From: </b>${booking.from}</span><br>
+            <span><b>To: </b>${booking.to}</span><br>
+            <button id="delete" >Delete Booking</button>
+            <button onClick='(()=>{})' >Update Booking</button>
+            </div>`;
+            document.getElementById(`${this.props.room}bookingDetails`).innerHTML = bookingDetailDiv;
+
+            let deleteButton=document.getElementById("delete");
+            deleteButton.addEventListener('click', ()=>{this.deleteBooking(booking)});
         }
-        
     }
+
     render() {
 
-        let bookingData= this.props.bookings;
+        let bookingData = this.props.bookings;
 
         return (
             <div className="p-2">
@@ -40,7 +58,7 @@ class RoomBookings extends Component {
                             <div className=" d-flex flex-wrap align-content-center col-11">
                                 {bookingData.map((booking, index) => {
                                     // return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
-                                    return <button key={index} className="small text-secondary border-secondary p-1 mr-2 mb-1" onClick={()=> {this.viewBooking(booking)}}>{booking.from} - {booking.to}</button>
+                                    return <button key={index} className="small text-secondary border-secondary p-1 mr-2 mb-1" onClick={() => { this.viewBooking(booking) }}>{booking.from} - {booking.to}</button>
                                 })}
                             </div>
                         </div>
@@ -54,6 +72,7 @@ class RoomBookings extends Component {
 class Room extends Component {
 
     render() {
+        let bookingDetailsId = this.props.name + "bookingDetails";
         return (
             <div id="room" className="border m-2">
                 <div className="border-bottom p-3 d-flex justify-content-between">
@@ -61,7 +80,7 @@ class Room extends Component {
                     <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
                 </div>
                 <RoomBookings room={this.props.name} rooms={this.props.room} bookings={this.props.bookings} className="border-bottom" />
-                <div id="bookingDetails"></div>
+                <div id={bookingDetailsId} className="border-top"></div>
             </div >
         )
     }
@@ -90,12 +109,12 @@ class Dashboard extends Component {
             .then(datas => {
                 this.setState({ rooms: datas[0] });
                 this.setState({ bookings: datas[1] });
-            })            
+            })
     }
 
     render() {
         console.log("Datas : ", this.state.rooms);
-        
+
         return (
             <div className="container p-3">
                 <div className="d-flex">
@@ -107,15 +126,15 @@ class Dashboard extends Component {
                     </select>
                 </div>
                 {this.state.rooms.map((room, index) => {
-                    let bookings = this.state.bookings.filter((roomBooking)=> {
-                        let found = this.state.rooms[index].booked.find((booking)=>{
+                    let bookings = this.state.bookings.filter((roomBooking) => {
+                        let found = this.state.rooms[index].booked.find((booking) => {
                             return (booking === roomBooking.id)
                         });
-                        
-                        if(found) { return roomBooking};
+
+                        if (found) { return roomBooking };
                     });
 
-                    return <Room key={index} name={room.name} room={this.state.rooms[index]} bookings={bookings}/>
+                    return <Room key={index} name={room.name} room={this.state.rooms[index]} bookings={bookings} />
                 })}
             </div>
         )

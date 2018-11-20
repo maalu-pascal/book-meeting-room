@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { roomDetails, userDetails } from './data.js';
+import { Link } from "react-router-dom"
 
 class Book extends Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class Book extends Component {
             from: '09:00',
             to: '09:30',
             userName: 'maalu',
-            roomDetail: [],
+            roomDetails: [],
+            bookingDetails: [],
             userDetails: [],
             customers: []
         };
@@ -25,23 +27,22 @@ class Book extends Component {
 
     }
 
-    // Fetch the customers on first mount
-    // componentDidMount() {
-    //     this.getCustomers();
-    // }
+    componentDidMount() {
+        this.getRoomData();
+    }
 
-    // Retrieves the customers from the Express app
-    // getCustomers() {
-    //     console.log("in");
-        
-    //     fetch('http://localhost:5030/success')
-    //         .then(res => res.json())
-    //         .then(customers => {
-    //             this.setState({ customers })
-    //             console.log(customers)
-    //         })
-    //         .catch(() => console.log("Can’t access \'/success\' response. Blocked by browser?"))
-    // }
+    // Retrieves the datas from the server.
+    getRoomData() {
+        fetch('/getRoomDetails', {
+            method: 'get',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(res => res.json())
+            .then(datas => {
+                this.setState({ roomDetails: datas[0] });
+                this.setState({ bookingDetails: datas[1] });
+            })
+    }
 
     handleInputChange(event) {
 
@@ -62,23 +63,29 @@ class Book extends Component {
             return error;
         }
 
-        let room = roomDetails.find((room) => {
+        let room = this.state.roomDetails.find((room) => {
             if (room.name === this.state.room) { return room; }
         });
-        error = room.booked.map((booking) => {
 
-            if (booking.from === this.state.from || booking.to === this.state.to) {
-                return errorMessage;
-            };
+        error = room.booked.map((bookingId) => {
 
-            if (booking.from < this.state.from && this.state.from < booking.to) {
-                return errorMessage;
-            };
+            let findBooking = this.state.bookingDetails.find((booking) => {
+                return (booking.id === bookingId);
+            });
 
-            if (booking.from < this.state.to && this.state.to < booking.to) {
-                return errorMessage;
-            };
+            if (findBooking) {
+                if (findBooking.from === this.state.from || findBooking.to === this.state.to) {
+                    return errorMessage;
+                };
 
+                if (findBooking.from < this.state.from && this.state.from < findBooking.to) {
+                    return errorMessage;
+                };
+
+                if (findBooking.from < this.state.to && this.state.to < findBooking.to) {
+                    return errorMessage;
+                };
+            }
         });
 
         let errorIndex = error.findIndex((msg) => { return (msg != undefined) });
@@ -86,9 +93,10 @@ class Book extends Component {
         return errorIndex >= 0 ? (error[errorIndex]) : false;
     }
 
+    //WIP
     handleSubmit(event) {
         console.log("handling submit!");
-        
+
         event.preventDefault();
         this.setState({
             date: new Date()
@@ -99,59 +107,60 @@ class Book extends Component {
         if (validation) {
             document.getElementById("formError").innerHTML = "*" + validation;
             return false;
-        }
-
-        /* Room details is updated. */
-        roomDetails.map((roomDetail) => {
-
-            if (roomDetail.name === this.state.room) {
-
-                let newBooking = {
-                    from: this.state.from,
-                    to: this.state.to
-                };
-
-                /*The postition where the new booking has to be inserted according to the time line,
-                 is calculated as 'index' */
-
-                let index = -1;
-                if (roomDetail.booked.length > 0) {
-                    index = roomDetail.booked.findIndex((previousBooked) => {
-                        return this.state.from < previousBooked.from;
-                    })
-                }
-                if (index < 0) { index = roomDetail.booked.length; }
-                roomDetail.booked.splice(index, 0, newBooking);
-            }
-        });
-
-
-        /* The user data is updated.*/
-
-        let existingUser = userDetails.findIndex((user) => {
-            if (user.userName === this.state.userName) { return user; }
-        });
-
-        if (existingUser < 0) {
-            let newUser = {
-                'userName': this.state.userName,
-                'bookings': [{
-                    'room': this.state.room,
-                    'from': this.state.from,
-                    'to': this.state.to
-                }]
-            };
-            userDetails.push(newUser);
         } else {
-            let newBooking = {
-                'room': this.state.room,
-                'from': this.state.from,
-                'to': this.state.to
-            };
-
-            userDetails[existingUser].bookings.push(newBooking)
+            document.getElementById("formError").innerHTML = "";
         }
-        // this.props.history.push('/');
+
+        // /* Room details is updated. */
+        // this.state.roomDetails.map((roomDetail) => {
+
+        //     if (roomDetail.name === this.state.room) {
+
+        //         let newBooking = {
+        //             from: this.state.from,
+        //             to: this.state.to
+        //         };
+
+        //         /*The postition where the new booking has to be inserted according to the time line,
+        //          is calculated as 'index' */
+
+        //         let index = -1;
+        //         if (roomDetail.booked.length > 0) {
+        //             index = roomDetail.booked.findIndex((previousBooked) => {
+        //                 return this.state.from < previousBooked.from;
+        //             })
+        //         }
+        //         if (index < 0) { index = roomDetail.booked.length; }
+        //         roomDetail.booked.splice(index, 0, newBooking);
+        //     }
+        // });
+
+
+        // /* The user data is updated.*/
+
+        // let existingUser = userDetails.findIndex((user) => {
+        //     if (user.userName === this.state.userName) { return user; }
+        // });
+
+        // if (existingUser < 0) {
+        //     let newUser = {
+        //         'userName': this.state.userName,
+        //         'bookings': [{
+        //             'room': this.state.room,
+        //             'from': this.state.from,
+        //             'to': this.state.to
+        //         }]
+        //     };
+        //     userDetails.push(newUser);
+        // } else {
+        //     let newBooking = {
+        //         'room': this.state.room,
+        //         'from': this.state.from,
+        //         'to': this.state.to
+        //     };
+
+        //     userDetails[existingUser].bookings.push(newBooking)
+        // }
         document.getElementById("bookingForm").submit();
     }
 
@@ -161,10 +170,8 @@ class Book extends Component {
                 {this.state.room ? (
                     <>
                         <h3>The room to be booked is <b>{this.state.room}</b></h3>
-                        {/* <form id="bookingForm" className="border p-3" method="post" > */}
-                            {/* <form onSubmit={this.handleSubmit.bind(this)} className="border p-3" ></form> */}
-                            <form  id="bookingForm" className="border p-3" method="post" action="/new-booking-test" >
-                            {/* <form  id="bookingForm" className="border p-3" method="post" > */}
+                        <Link to={{ pathname: "/" }}><button >Back</button></ Link>
+                        <form id="bookingForm" className="border p-3" method="post" action="/new-booking" >
                             <div className="form-group">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
@@ -180,7 +187,6 @@ class Book extends Component {
                             </div>
                             <input type="hidden" name="room" value={this.state.room} ></input>
                             <input type="button" onClick={this.handleSubmit.bind(this)} value="Submit" />
-                            {/* <input type="submit" value="Submit" /> */}
                         </form>
                         <span id="formError" className="text-danger"> </span>
                     </>

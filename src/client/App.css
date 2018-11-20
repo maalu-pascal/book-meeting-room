@@ -1,7 +1,9 @@
 header .navbar-brand{
     color: #808080;
 }
-
+button:hover {
+    cursor: pointer;
+}
 header .navbar-brand:hover{
     color: #b6b5b5;
 }

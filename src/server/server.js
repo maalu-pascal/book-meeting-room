@@ -21,49 +21,125 @@ app.get('/getData', function (req, res) {
 })
 
 app.get('/getRoomDetails', function (req, res) {
-    res.send([data.roomDetails, data.roomBookings ]);
+    res.send([data.roomDetails, data.roomBookings]);
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-app.use(bodyParser.json());       
-app.use(bodyParser.urlencoded({     
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(express.json());      
-app.use(express.urlencoded()); 
+app.use(express.json());
+app.use(express.urlencoded());
 
-app.post('/new-booking-test', function (req, res) {
+//WIP
+//rendered when the new booking form is submitted.
+app.post('/new-booking', function (req, res) {
 
-    const user = data.users.find((user)=>{ return(user.name.toUpperCase() === req.body.userName.toUpperCase())});
-    
+    const user = data.users.find((user) => { return (user.name.toUpperCase() === req.body.userName.toUpperCase()) });
     const room = data.roomDetails.find((room) => { return (room.name === req.body.room); });
-    let newEntry = {};
+
+    let newBooking = {};
 
     if (room && user) {
-        newEntry = {
+        newBooking = {
             "id": `id-${new Date().getTime()}`,
             "userId": user.id,
             "roomId": room.id,
             "from": req.body.from,
             "to": req.body.to,
-            "date":`${new Date()}`
+            "date": `${new Date()}`
         };
-        data.roomBookings.push(newEntry);
-        room.booked.push(newEntry.id);
-        user.bookings.push(newEntry.id);
+        data.roomBookings.push(newBooking);
+
+
+        let bookings = data.roomBookings.filter((roomBooking) => {
+            let found = room.booked.find((booking) => {
+                return (booking === roomBooking.id)
+            });
+
+            if (found) { return roomBooking };
+        });
+        console.log("all bookings of this room:", bookings);
+
+        let index = -1;
+        if (room.booked.length > 0) {
+            let bookingIndex;
+            console.log("room.booked : ", room.booked);
+
+            index = room.booked.findIndex((previousBooked) => {
+                if (bookings.length > 0) {
+                    bookingIndex = bookings.find((booking) => {
+                        console.log("booking :", booking);
+                        console.log("newBooking.from , booking.from : ", newBooking.from, booking.from);
+
+                        return newBooking.from < booking.from;
+
+                    });
+
+                }
+                console.log("previousBooked", previousBooked);
+                if (bookingIndex >= 0) {
+                    return previousBooked;
+                }
+            })
+        }
+
+        console.log(index);
+
+        // if (index < 0) { index = roomDetail.booked.length; }
+        // roomDetail.booked.splice(index, 0, newBooking);
+
+
+        
+        room.booked.push(newBooking.id);
+
+        user.bookings.push(newBooking.id);
     }
-    console.log("data : ",data);
+    console.log("data : ", data);
     res.redirect('/');
 });
 
+//To delete a booking.
+app.delete('/booking', (req, res) => {
+    console.log("delete: ", req.body);
+
+    let id = req.body.id;
+    let bookingIndex = data.roomBookings.findIndex((roomBooking) => {
+        return (roomBooking.id === id)
+    });
+
+    data.users.map((user) => {
+        if(user.id === data.roomBookings[bookingIndex].userId) {
+            let userBookingIndex = user.bookings.indexOf(id);
+            user.bookings.splice(userBookingIndex, 1);
+        }
+    });
+
+    data.roomDetails.map((roomBooked) => {
+        if(roomBooked.id === data.roomBookings[bookingIndex].roomId) {
+            let roomBookingIndex = roomBooked.booked.indexOf(id);
+            roomBooked.booked.splice(roomBookingIndex, 1);
+        }
+    });
+
+    if (bookingIndex >= 0) {
+        data.roomBookings.splice(bookingIndex, 1);        
+        res.send({ status: "Deleted" });
+    } else {
+        res.send({ status: "Booking not found" });
+    }
+});
+
+//All datas stored in a JSON variable.
 const data = {
     "roomDetails": [
         {
             'id': '00201',
             'name': 'Ada',
-            'booked': [],
+            'booked': ['id-1542709745054'],
         },
         {
             'id': '00202',
@@ -86,35 +162,39 @@ const data = {
             'booked': []
         }
     ],
-    "roomBookings": [],
+    "roomBookings": [{
+        id: 'id-1542709745054',
+        userId: '0101',
+        roomId: '00201',
+        from: '09:00',
+        to: '09:30',
+        date: 'Tue Nov 20 2018 15:59:05 GMT+0530 (IST)'
+    }],
     "users": [
         {
             "id": "0101",
             "name": "Maalu",
-            "bookings":[]
+            "bookings": ['id-1542709745054']
         },
         {
             "id": "0102",
             "name": "Lida",
-            "bookings":[]
+            "bookings": []
         },
         {
             "id": "0103",
             "name": "Alan",
-            "bookings":[]
+            "bookings": []
         },
         {
             "id": "0104",
             "name": "Akshay",
-            "bookings":[]
+            "bookings": []
         },
-    
+
     ]
 };
+
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(PATH_root + '/index.html'));
-// });
-
-// var server = app.listen(3020, function () {
-//    console.log("app running on port.", server.address().port);
 // });
