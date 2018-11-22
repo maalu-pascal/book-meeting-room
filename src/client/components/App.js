@@ -1,9 +1,10 @@
 import React , {Component} from "react";
 import "./../App.css";
 import { BrowserRouter, Route, NavLink, Switch, Redirect } from "react-router-dom"
-import { Dashboard } from './dashboard.js';
+import { Dashboard ,ConnectDashboard} from './dashboard.js';
 import { Book } from './bookRoom.js';
-import { List } from './success';
+import {Container, store} from './../../../redux/store.js';
+
 
 class Bookings extends Component {
   render() {
@@ -32,8 +33,14 @@ const Header = () => {
 
 
 class AppRouter extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      userAuthentication: this.props.authentication
+    }
+  }
   render() {
-
+    
     return (
       <BrowserRouter>
         <div>
@@ -41,8 +48,9 @@ class AppRouter extends Component {
           <Switch>
             <Route path="/bookings" component={Bookings} />
             <Route path="/book" component={Book} />
-            {/* <Route path="/success" component={List} /> */}
             <Route path="/" component={Dashboard} />
+            {/* <Route path="/" component={ConnectDashboard} /> */}
+
           </Switch>
         </div>
       </BrowserRouter>

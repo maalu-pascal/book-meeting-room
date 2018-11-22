@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { roomDetails } from './data.js';
 import { Link, Redirect } from "react-router-dom"
+import { Provider } from 'react-redux';
+import { store, mapStateToProps, mapDispatchToProps } from './../../../redux/store.js';
+import { connect } from 'react-redux'
+
 
 
 class RoomBookings extends Component {
@@ -19,13 +23,11 @@ class RoomBookings extends Component {
                 if (res.ok) return res.json();
             }).
             then(data => {
-                console.log(data.status);
                 window.location.reload();
             });
     }
 
     viewBooking(booking) {
-        console.log(this.props.bookings, booking);
 
         if (booking) {
             let bookingDetailDiv;
@@ -38,8 +40,8 @@ class RoomBookings extends Component {
             </div>`;
             document.getElementById(`${this.props.room}bookingDetails`).innerHTML = bookingDetailDiv;
 
-            let deleteButton=document.getElementById("delete");
-            deleteButton.addEventListener('click', ()=>{this.deleteBooking(booking)});
+            let deleteButton = document.getElementById("delete");
+            deleteButton.addEventListener('click', () => { this.deleteBooking(booking) });
         }
     }
 
@@ -48,7 +50,7 @@ class RoomBookings extends Component {
         let bookingData = this.props.bookings;
 
         return (
-            <div className="p-2">
+            <div className="p-2 bg-light">
                 {(bookingData.length == 0) ?
                     (<span className="small text-secondary  p-1 m-2"> No bookings to show.</span>)
                     :
@@ -58,7 +60,7 @@ class RoomBookings extends Component {
                             <div className=" d-flex flex-wrap align-content-center col-11">
                                 {bookingData.map((booking, index) => {
                                     // return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
-                                    return <button key={index} className="small text-secondary border-secondary p-1 mr-2 mb-1" onClick={() => { this.viewBooking(booking) }}>{booking.from} - {booking.to}</button>
+                                    return <div key={index} className="showBooking small text-secondary border  p-1 mr-2 mb-1" onClick={() => { this.viewBooking(booking) }}>{booking.from} - {booking.to}</div>
                                 })}
                             </div>
                         </div>
@@ -72,6 +74,7 @@ class RoomBookings extends Component {
 class Room extends Component {
 
     render() {
+
         let bookingDetailsId = this.props.name + "bookingDetails";
         return (
             <div id="room" className="border m-2">
@@ -85,6 +88,23 @@ class Room extends Component {
         )
     }
 }
+
+class AuthenticateUser extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let sign = (this.props.authentication.auth.authenticated) ? 'Sign In' : 'Sign Out';
+  console.log("id :",store.getState().auth.userId);
+        
+        return <div className="ml-auto">
+            <button className="m-2" onClick={()=>{this.props.toggleAuth('0101')}}>{sign}</button>
+        </div>
+    }
+}
+
+const AuthContainer = connect(mapStateToProps, mapDispatchToProps)(AuthenticateUser);
 
 class Dashboard extends Component {
     constructor(props) {
@@ -113,17 +133,19 @@ class Dashboard extends Component {
     }
 
     render() {
-        console.log("Datas : ", this.state.rooms);
 
         return (
             <div className="container p-3">
-                <div className="d-flex">
-                    <span>Daylight Saving: </span>
-                    <select className="m-2 ml-auto">
-                        <option defaultValue value="+00:00">OFF</option>
-                        <option value="+01:00">Eastern Standard Time</option>
-                        <option value="-01:00">Japan Standard Time</option>
-                    </select>
+                <div className="d-flex flex-column">
+                    <AuthContainer />
+                    <div className="float-right ml-auto">
+                        <span>Daylight Saving: </span>
+                        <select className="m-2 ml-auto">
+                            <option defaultValue value="+00:00">OFF</option>
+                            <option value="+01:00">Eastern Standard Time</option>
+                            <option value="-01:00">Japan Standard Time</option>
+                        </select>
+                    </div>
                 </div>
                 {this.state.rooms.map((room, index) => {
                     let bookings = this.state.bookings.filter((roomBooking) => {
@@ -141,4 +163,13 @@ class Dashboard extends Component {
     }
 }
 
-export { Dashboard };
+
+// class ConnectDashboard extends Component {
+//     render() {
+//         return <Provider store={store}>
+//             <Container />
+//         </Provider>;
+//     }
+// }
+
+export { Dashboard, ConnectDashboard };

@@ -1,0 +1,69 @@
+import {combineReducers} from 'redux';
+import { LOGIN, LOGOUT, AUTH_TOGGLE } from './../actions/actions.js'
+import { NEW_BOOKING, DELETE_BOOKING } from './../actions/actions.js'
+
+
+// const INCREMENT = 'INCREMENT';
+// const DECREMENT = 'DECREMENT';
+
+// const counterReducer = (state = 0, action) => {
+//   switch(action.type) {
+//     case INCREMENT:
+//       return state + 1;
+//     case DECREMENT:
+//       return state - 1;
+//     default:
+//       return state;
+//   }
+// };
+
+const bookingReduser = (state = { bookings: [] }, action) => {
+  switch (action.type) {
+    case NEW_BOOKING:
+      return [...state, action.bookings];
+    case DELETE_BOOKING:
+      return [...state.slice(0, index), ...state.slice(index + 1, state.length())];
+    default:
+      return state;
+  }
+}
+
+const authReducer = (state = { authenticated: false, userId: '' }, action) => {
+  
+  switch (action.type) {
+    case AUTH_TOGGLE:
+    let id = (state.authenticated)? action.userId:'';
+    console.log(id);
+    
+      return {
+        authenticated: !state.authenticated,
+        userId: id
+      };
+    // case LOGIN:
+    //   return {
+    //     authenticated: true
+    //   }
+    // case LOGOUT:
+    //   return {
+    //     authenticated: false
+    //   }
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  book: bookingReduser
+});
+
+// const reducer = (state = 0, action) => {
+//   switch (action.type) {
+//     case ADD:
+//       return state + 1;
+//     default:
+//       return state;
+//   }
+// };
+
+export { rootReducer, reducer };
