@@ -32,8 +32,8 @@ const authReducer = (state = { authenticated: false, userId: '' }, action) => {
   
   switch (action.type) {
     case AUTH_TOGGLE:
-    let id = (state.authenticated)? action.userId:'';
-    console.log(id);
+    let id = (state.authenticated)? '':action.userId;
+    // console.log(id);
     
       return {
         authenticated: !state.authenticated,
@@ -41,10 +41,12 @@ const authReducer = (state = { authenticated: false, userId: '' }, action) => {
       };
     // case LOGIN:
     //   return {
+    //     userId: action.userId,
     //     authenticated: true
     //   }
     // case LOGOUT:
     //   return {
+    //     userId: '',
     //     authenticated: false
     //   }
     default:

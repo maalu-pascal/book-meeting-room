@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { roomDetails, userDetails } from './data.js';
 import { Link } from "react-router-dom"
 
 class Book extends Component {
@@ -14,37 +13,33 @@ class Book extends Component {
             room: roomName,
             from: '09:00',
             to: '09:30',
+            title: 'Meeting',
             userName: 'maalu',
             roomDetails: [],
             bookingDetails: [],
             userDetails: [],
-            customers: []
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.validateTime = this.validateTime.bind(this);
-        // this.getCustomers();
 
-    }
-
-    componentDidMount() {
-        this.getRoomData();
     }
 
     // Retrieves the datas from the server.
-    getRoomData() {
+    componentDidMount() {
         fetch('/getRoomDetails', {
             method: 'get',
             headers: { 'Content-Type': 'application/json' },
         })
             .then(res => res.json())
             .then(datas => {
-                this.setState({ roomDetails: datas[0] });
-                this.setState({ bookingDetails: datas[1] });
+                this.setState({ roomDetails: datas[0], bookingDetails: datas[1] });
             })
     }
 
     handleInputChange(event) {
+        
+        event.preventDefault();
 
         const target = event.target;
         const value = target.value;
@@ -93,7 +88,6 @@ class Book extends Component {
         return errorIndex >= 0 ? (error[errorIndex]) : false;
     }
 
-    //WIP
     handleSubmit(event) {
         console.log("handling submit!");
 
@@ -111,56 +105,6 @@ class Book extends Component {
             document.getElementById("formError").innerHTML = "";
         }
 
-        // /* Room details is updated. */
-        // this.state.roomDetails.map((roomDetail) => {
-
-        //     if (roomDetail.name === this.state.room) {
-
-        //         let newBooking = {
-        //             from: this.state.from,
-        //             to: this.state.to
-        //         };
-
-        //         /*The postition where the new booking has to be inserted according to the time line,
-        //          is calculated as 'index' */
-
-        //         let index = -1;
-        //         if (roomDetail.booked.length > 0) {
-        //             index = roomDetail.booked.findIndex((previousBooked) => {
-        //                 return this.state.from < previousBooked.from;
-        //             })
-        //         }
-        //         if (index < 0) { index = roomDetail.booked.length; }
-        //         roomDetail.booked.splice(index, 0, newBooking);
-        //     }
-        // });
-
-
-        // /* The user data is updated.*/
-
-        // let existingUser = userDetails.findIndex((user) => {
-        //     if (user.userName === this.state.userName) { return user; }
-        // });
-
-        // if (existingUser < 0) {
-        //     let newUser = {
-        //         'userName': this.state.userName,
-        //         'bookings': [{
-        //             'room': this.state.room,
-        //             'from': this.state.from,
-        //             'to': this.state.to
-        //         }]
-        //     };
-        //     userDetails.push(newUser);
-        // } else {
-        //     let newBooking = {
-        //         'room': this.state.room,
-        //         'from': this.state.from,
-        //         'to': this.state.to
-        //     };
-
-        //     userDetails[existingUser].bookings.push(newBooking)
-        // }
         document.getElementById("bookingForm").submit();
     }
 
@@ -175,6 +119,10 @@ class Book extends Component {
                             <div className="form-group">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
+                            </div>
+                            <div className="form-group">
+                                <label> Title : </label>
+                                <input name='title' type='input' value={this.state.title} onChange={this.handleInputChange} placeholder="Enter title" className="ml-3" />
                             </div>
                             <label><b> Duration of booking: </b></label>
                             <div>

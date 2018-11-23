@@ -50,52 +50,50 @@ app.post('/new-booking', function (req, res) {
             "roomId": room.id,
             "from": req.body.from,
             "to": req.body.to,
+            "title": req.body.title,
             "date": `${new Date()}`
         };
         data.roomBookings.push(newBooking);
 
 
-        let bookings = data.roomBookings.filter((roomBooking) => {
-            let found = room.booked.find((booking) => {
-                return (booking === roomBooking.id)
-            });
+        // let bookings = data.roomBookings.filter((roomBooking) => {
+        //     let found = room.booked.find((booking) => {
+        //         return (booking === roomBooking.id)
+        //     });
 
-            if (found) { return roomBooking };
-        });
-        console.log("all bookings of this room:", bookings);
+        //     if (found) { return roomBooking };
+        // });
+        // console.log("all bookings of this room:", bookings);
 
-        let index = -1;
-        if (room.booked.length > 0) {
-            let bookingIndex;
-            console.log("room.booked : ", room.booked);
+        // let index = -1;
+        // if (room.booked.length > 0) {
+        //     let bookingIndex;
+        //     console.log("room.booked : ", room.booked);
 
-            index = room.booked.findIndex((previousBooked) => {
-                if (bookings.length > 0) {
-                    bookingIndex = bookings.find((booking) => {
-                        console.log("booking :", booking);
-                        console.log("newBooking.from , booking.from : ", newBooking.from, booking.from);
+        //     index = room.booked.findIndex((previousBooked) => {
+        //         if (bookings.length > 0) {
+        //             bookingIndex = bookings.find((booking) => {
+        //                 console.log("booking :", booking);
+        //                 console.log("newBooking.from , booking.from : ", newBooking.from, booking.from);
 
-                        return newBooking.from < booking.from;
+        //                 return newBooking.from < booking.from;
 
-                    });
+        //             });
 
-                }
-                console.log("previousBooked", previousBooked);
-                if (bookingIndex >= 0) {
-                    return previousBooked;
-                }
-            })
-        }
+        //         }
+        //         console.log("previousBooked", previousBooked);
+        //         if (bookingIndex >= 0) {
+        //             return previousBooked;
+        //         }
+        //     })
+        // }
 
-        console.log(index);
+        // console.log(index);
 
         // if (index < 0) { index = roomDetail.booked.length; }
         // roomDetail.booked.splice(index, 0, newBooking);
 
-
-        
         room.booked.push(newBooking.id);
-
         user.bookings.push(newBooking.id);
     }
     console.log("data : ", data);
@@ -112,21 +110,21 @@ app.delete('/booking', (req, res) => {
     });
 
     data.users.map((user) => {
-        if(user.id === data.roomBookings[bookingIndex].userId) {
+        if (user.id === data.roomBookings[bookingIndex].userId) {
             let userBookingIndex = user.bookings.indexOf(id);
             user.bookings.splice(userBookingIndex, 1);
         }
     });
 
     data.roomDetails.map((roomBooked) => {
-        if(roomBooked.id === data.roomBookings[bookingIndex].roomId) {
+        if (roomBooked.id === data.roomBookings[bookingIndex].roomId) {
             let roomBookingIndex = roomBooked.booked.indexOf(id);
             roomBooked.booked.splice(roomBookingIndex, 1);
         }
     });
 
     if (bookingIndex >= 0) {
-        data.roomBookings.splice(bookingIndex, 1);        
+        data.roomBookings.splice(bookingIndex, 1);
         res.send({ status: "Deleted" });
     } else {
         res.send({ status: "Booking not found" });
@@ -168,6 +166,7 @@ const data = {
         roomId: '00201',
         from: '09:00',
         to: '09:30',
+        title: 'Meeting',
         date: 'Tue Nov 20 2018 15:59:05 GMT+0530 (IST)'
     }],
     "users": [

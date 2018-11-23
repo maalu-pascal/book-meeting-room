@@ -17,6 +17,10 @@ class Bookings extends Component {
   }
 }
 
+const Refresh =() => {
+  return <Redirect to="/"/>
+}
+
 const Header = () => {
   return (
     <header className="bg-dark text-light p-2" >
@@ -48,9 +52,8 @@ class AppRouter extends Component {
           <Switch>
             <Route path="/bookings" component={Bookings} />
             <Route path="/book" component={Book} />
+            <Route path="/refresh" component={Refresh}/>
             <Route path="/" component={Dashboard} />
-            {/* <Route path="/" component={ConnectDashboard} /> */}
-
           </Switch>
         </div>
       </BrowserRouter>

@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { roomDetails } from './data.js';
 import { Link, Redirect } from "react-router-dom"
-import { Provider } from 'react-redux';
 import { store, mapStateToProps, mapDispatchToProps } from './../../../redux/store.js';
 import { connect } from 'react-redux'
 
@@ -9,7 +7,61 @@ import { connect } from 'react-redux'
 
 class RoomBookings extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showDetail: false,
+            booking: ''
+        }
+        this.viewBooking = this.viewBooking.bind(this);
+
+    }
+
+    viewBooking(booking) {
+        if (booking) {
+            this.setState({ showDetail: true, booking: booking });
+        }
+    }
+
+    render() {
+        let bookingData = this.props.bookings;
+
+        return (<>
+            <div className="p-2 bg-light">
+                {(bookingData.length == 0) ?
+                    (<span className="small text-secondary  p-1 m-2"> No bookings to show.</span>)
+                    :
+                    (
+                        <div className="d-flex">
+                            <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
+                            <div className=" d-flex flex-wrap align-content-center col-11">
+                                {bookingData.map((booking, index) => {
+                                    return <div key={index} className="showBooking small text-secondary border  p-1 mr-2 mb-1" onClick={() => { this.viewBooking(booking) }}>{booking.from} - {booking.to}</div>
+                                })}
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+            {this.state.showDetail ? <BookingDetail booking={this.state.booking} /> : null}
+        </>
+        );
+    }
+}
+
+class BookingDetail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state={
+            redirect: false
+        };
+    }
+
     deleteBooking(booking) {
+        console.log("entered Booking :", booking);
+
         fetch(`booking`, {
             method: 'delete',
             headers: {
@@ -23,59 +75,32 @@ class RoomBookings extends Component {
                 if (res.ok) return res.json();
             }).
             then(data => {
-                window.location.reload();
+                // window.location.reload();
+                this.setState({redirect: true});      
+                console.log("deleted");
+
             });
     }
-
-    viewBooking(booking) {
-
-        if (booking) {
-            let bookingDetailDiv;
-            bookingDetailDiv = `<div class="p-3">
-            <span>Booking Details</span><br>
-            <span><b>From: </b>${booking.from}</span><br>
-            <span><b>To: </b>${booking.to}</span><br>
-            <button id="delete" >Delete Booking</button>
-            <button onClick='(()=>{})' >Update Booking</button>
-            </div>`;
-            document.getElementById(`${this.props.room}bookingDetails`).innerHTML = bookingDetailDiv;
-
-            let deleteButton = document.getElementById("delete");
-            deleteButton.addEventListener('click', () => { this.deleteBooking(booking) });
-        }
-    }
-
     render() {
+        let booking = this.props.booking;
 
-        let bookingData = this.props.bookings;
-
-        return (
-            <div className="p-2 bg-light">
-                {(bookingData.length == 0) ?
-                    (<span className="small text-secondary  p-1 m-2"> No bookings to show.</span>)
-                    :
-                    (
-                        <div className="d-flex">
-                            <div className="small text-secondary font-weight-bold p-1 col-1">Bookings:</div>
-                            <div className=" d-flex flex-wrap align-content-center col-11">
-                                {bookingData.map((booking, index) => {
-                                    // return <div key={index} className="small text-secondary border p-1 mr-2 mb-1">{booking.from} - {booking.to}</div>
-                                    return <div key={index} className="showBooking small text-secondary border  p-1 mr-2 mb-1" onClick={() => { this.viewBooking(booking) }}>{booking.from} - {booking.to}</div>
-                                })}
-                            </div>
-                        </div>
-                    )
-                }
-            </div>
-        );
+        return <div className="p-3 border-top" id={booking.id} >
+            <span><b><i><u>Booking Details</u></i></b></span><br />
+            <span><b>From: </b>{booking.from}</span><br />
+            <span><b>To: </b>{booking.to}</span><br />
+            <span><b>Title: </b>{booking.title}</span><br />
+            {(booking.userId === store.getState().auth.userId) ?
+                <><button id="delete" onClick={() => { this.deleteBooking(booking) }} className="m-2" >Delete Booking</button>
+                    <button id='update'  >Update Booking</button></> : ''
+            }
+            {(this.state.redirect)?<Redirect to="/refresh" />:null}
+        </div>
     }
 }
-
 class Room extends Component {
 
     render() {
 
-        let bookingDetailsId = this.props.name + "bookingDetails";
         return (
             <div id="room" className="border m-2">
                 <div className="border-bottom p-3 d-flex justify-content-between">
@@ -83,7 +108,6 @@ class Room extends Component {
                     <Link to={{ pathname: "/book", search: `?name=${this.props.name}` }}><button >Book</button></ Link>
                 </div>
                 <RoomBookings room={this.props.name} rooms={this.props.room} bookings={this.props.bookings} className="border-bottom" />
-                <div id={bookingDetailsId} className="border-top"></div>
             </div >
         )
     }
@@ -95,15 +119,14 @@ class AuthenticateUser extends Component {
     }
 
     render() {
-        let sign = (this.props.authentication.auth.authenticated) ? 'Sign In' : 'Sign Out';
-  console.log("id :",store.getState().auth.userId);
-        
         return <div className="ml-auto">
-            <button className="m-2" onClick={()=>{this.props.toggleAuth('0101')}}>{sign}</button>
+            <button className="m-2" onClick={() => { this.props.toggleAuth('0101') }}>{
+                (store.getState().auth.authenticated) ? 'Sign Out' : 'Sign In'}</button>
         </div>
     }
 }
 
+//Connect the state and dispatch functions to the 'AuthenticateUser' component
 const AuthContainer = connect(mapStateToProps, mapDispatchToProps)(AuthenticateUser);
 
 class Dashboard extends Component {
@@ -115,12 +138,8 @@ class Dashboard extends Component {
         }
     }
 
-    componentDidMount() {
-        this.getRoomData();
-    }
-
     // Retrieves the datas from the server.
-    getRoomData() {
+    componentDidMount() {
         fetch('/getRoomDetails', {
             method: 'get',
             headers: { 'Content-Type': 'application/json' },
@@ -140,7 +159,7 @@ class Dashboard extends Component {
                     <AuthContainer />
                     <div className="float-right ml-auto">
                         <span>Daylight Saving: </span>
-                        <select className="m-2 ml-auto">
+                        <select className="m-2 ml-auto" disabled>
                             <option defaultValue value="+00:00">OFF</option>
                             <option value="+01:00">Eastern Standard Time</option>
                             <option value="-01:00">Japan Standard Time</option>
@@ -152,24 +171,13 @@ class Dashboard extends Component {
                         let found = this.state.rooms[index].booked.find((booking) => {
                             return (booking === roomBooking.id)
                         });
-
                         if (found) { return roomBooking };
                     });
-
                     return <Room key={index} name={room.name} room={this.state.rooms[index]} bookings={bookings} />
                 })}
             </div>
         )
     }
 }
-
-
-// class ConnectDashboard extends Component {
-//     render() {
-//         return <Provider store={store}>
-//             <Container />
-//         </Provider>;
-//     }
-// }
 
 export { Dashboard, ConnectDashboard };

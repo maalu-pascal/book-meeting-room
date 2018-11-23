@@ -14,7 +14,6 @@ let count = 0;
 /*To subscribe to listen to the new actions dispatched.
   Calls the INCREMENT function each time an action is dispatched. */
 const COUNT = () => {
-  console.log(store);
   return count++;
 };
 store.subscribe(COUNT);
