@@ -34,7 +34,6 @@ app.use(bodyParser.urlencoded({
 app.use(express.json());
 app.use(express.urlencoded());
 
-//WIP
 //rendered when the new booking form is submitted.
 app.post('/new-booking', function (req, res) {
 
@@ -54,44 +53,6 @@ app.post('/new-booking', function (req, res) {
             "date": `${new Date()}`
         };
         data.roomBookings.push(newBooking);
-
-
-        // let bookings = data.roomBookings.filter((roomBooking) => {
-        //     let found = room.booked.find((booking) => {
-        //         return (booking === roomBooking.id)
-        //     });
-
-        //     if (found) { return roomBooking };
-        // });
-        // console.log("all bookings of this room:", bookings);
-
-        // let index = -1;
-        // if (room.booked.length > 0) {
-        //     let bookingIndex;
-        //     console.log("room.booked : ", room.booked);
-
-        //     index = room.booked.findIndex((previousBooked) => {
-        //         if (bookings.length > 0) {
-        //             bookingIndex = bookings.find((booking) => {
-        //                 console.log("booking :", booking);
-        //                 console.log("newBooking.from , booking.from : ", newBooking.from, booking.from);
-
-        //                 return newBooking.from < booking.from;
-
-        //             });
-
-        //         }
-        //         console.log("previousBooked", previousBooked);
-        //         if (bookingIndex >= 0) {
-        //             return previousBooked;
-        //         }
-        //     })
-        // }
-
-        // console.log(index);
-
-        // if (index < 0) { index = roomDetail.booked.length; }
-        // roomDetail.booked.splice(index, 0, newBooking);
 
         room.booked.push(newBooking.id);
         user.bookings.push(newBooking.id);
@@ -131,7 +92,7 @@ app.delete('/booking', (req, res) => {
     }
 });
 
-//All datas stored in a JSON variable.
+//All datas stored as a JSON variable.
 const data = {
     "roomDetails": [
         {

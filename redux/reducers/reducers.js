@@ -2,21 +2,6 @@ import {combineReducers} from 'redux';
 import { LOGIN, LOGOUT, AUTH_TOGGLE } from './../actions/actions.js'
 import { NEW_BOOKING, DELETE_BOOKING } from './../actions/actions.js'
 
-
-// const INCREMENT = 'INCREMENT';
-// const DECREMENT = 'DECREMENT';
-
-// const counterReducer = (state = 0, action) => {
-//   switch(action.type) {
-//     case INCREMENT:
-//       return state + 1;
-//     case DECREMENT:
-//       return state - 1;
-//     default:
-//       return state;
-//   }
-// };
-
 const bookingReduser = (state = { bookings: [] }, action) => {
   switch (action.type) {
     case NEW_BOOKING:
@@ -33,7 +18,6 @@ const authReducer = (state = { authenticated: false, userId: '' }, action) => {
   switch (action.type) {
     case AUTH_TOGGLE:
     let id = (state.authenticated)? '':action.userId;
-    // console.log(id);
     
       return {
         authenticated: !state.authenticated,
@@ -59,13 +43,5 @@ const rootReducer = combineReducers({
   book: bookingReduser
 });
 
-// const reducer = (state = 0, action) => {
-//   switch (action.type) {
-//     case ADD:
-//       return state + 1;
-//     default:
-//       return state;
-//   }
-// };
 
 export { rootReducer, reducer };

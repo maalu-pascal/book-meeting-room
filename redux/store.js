@@ -1,10 +1,7 @@
 import { createStore } from 'redux';
 import { rootReducer } from './reducers/reducers.js'
-import { connect } from 'react-redux'
 
 import { authToggle, AUTH_TOGGLE } from './actions/actions.js';
-import AppRouter from '../src/client/components/App.js';
-import { Dashboard } from './../src/client/components/dashboard.js';
 
 const store = createStore(rootReducer);
 
