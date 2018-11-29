@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom"
 
+
+function WarningMessage(props) {
+
+    if (!props.show) {
+        return null;
+    } else {
+        return <span id="formError" className="text-danger"> *{props.warning}</span>
+    }
+
+}
 class Book extends Component {
     constructor(props) {
         super(props);
@@ -18,6 +28,8 @@ class Book extends Component {
             roomDetails: [],
             bookingDetails: [],
             userDetails: [],
+            showWarning: false,
+            warning: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -38,7 +50,7 @@ class Book extends Component {
     }
 
     handleInputChange(event) {
-        
+
         event.preventDefault();
 
         const target = event.target;
@@ -89,7 +101,6 @@ class Book extends Component {
     }
 
     handleSubmit(event) {
-        console.log("handling submit!");
 
         event.preventDefault();
         this.setState({
@@ -99,10 +110,10 @@ class Book extends Component {
         let validation = this.validateTime();
 
         if (validation) {
-            document.getElementById("formError").innerHTML = "*" + validation;
+            this.setState({ showWarning: true, warning: validation })
             return false;
         } else {
-            document.getElementById("formError").innerHTML = "";
+            this.setState({ showWarning: false })
         }
 
         document.getElementById("bookingForm").submit();
@@ -113,16 +124,16 @@ class Book extends Component {
             <div className="container p-3">
                 {this.state.room ? (
                     <>
-                        <h3>The room to be booked is <b>{this.state.room}</b></h3>
-                        <Link to={{ pathname: "/" }}><button >Back</button></ Link>
+                        <h3><b>Book {this.state.room}</b>:</h3>
+                        <Link to={{ pathname: "/" }}><button className="d-flex ml-auto mb-2">Back</button></ Link>
                         <form id="bookingForm" className="border p-3" method="post" action="/new-booking" >
-                            <div className="form-group">
+                            <div className="form-group d-flex align-items-start">
                                 <label> Username : </label>
                                 <input name="userName" type='input' value={this.state.userName} onChange={this.handleInputChange} placeholder="Enter user name" className="ml-3" />
                             </div>
-                            <div className="form-group">
-                                <label> Title : </label>
-                                <input name='title' type='input' value={this.state.title} onChange={this.handleInputChange} placeholder="Enter title" className="ml-3" />
+                            <div className="form-group d-flex align-items-start">
+                                <label> Description : </label>
+                                <textarea name='title' type='input' value={this.state.title} onChange={this.handleInputChange} placeholder="Enter title" className="ml-3" />
                             </div>
                             <label><b> Duration of booking: </b></label>
                             <div>
@@ -136,7 +147,7 @@ class Book extends Component {
                             <input type="hidden" name="room" value={this.state.room} ></input>
                             <input type="button" onClick={this.handleSubmit.bind(this)} value="Submit" />
                         </form>
-                        <span id="formError" className="text-danger"> </span>
+                        <WarningMessage show={this.state.showWarning} warning={this.state.warning} />
                     </>
                 ) : (
                         <h3>There is no room selected</h3>
